@@ -30,7 +30,7 @@ if (termsCheckbox) {
     if (!termsCheckbox.checked) {
       signupSubmitBtn.disabled = true
       signupSubmitBtn.textContent = "Sign Up"
-      podcastGroup.classList.add('hidden')
+      if (podcastGroup) podcastGroup.classList.add('hidden')
       return
     }
 
@@ -42,12 +42,12 @@ if (termsCheckbox) {
       hasWaitedFiveMinutes = false
       signupSubmitBtn.disabled = true
       signupSubmitBtn.textContent = "I know you didn’t read that 😐"
-      podcastGroup.classList.add('hidden')
+      if (podcastGroup) podcastGroup.classList.add('hidden')
     } else {
       hasWaitedFiveMinutes = true
       signupSubmitBtn.disabled = false
       signupSubmitBtn.textContent = "Sign Up"
-      podcastGroup.classList.remove('hidden')
+      if (podcastGroup) podcastGroup.classList.remove('hidden')
     }
   })
 }
@@ -56,23 +56,31 @@ if (signupForm) {
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const name = document.getElementById('signup-name').value
-    const email = document.getElementById('signup-email').value.trim()
-    const password = document.getElementById('signup-password').value
-    const confirmPassword = document.getElementById('signup-confirm-password').value
+    const nameInput = document.getElementById('signup-name')
+    const emailInput = document.getElementById('signup-email')
+    const passwordInput = document.getElementById('signup-password')
+    const confirmPasswordInput = document.getElementById('signup-confirm-password')
+
+    // Read values safely
+    const name = nameInput ? nameInput.value : ''
+    const email = emailInput ? emailInput.value.trim() : ''
+    const password = passwordInput ? passwordInput.value : ''
+    const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : ''
 
     if (password !== confirmPassword) {
       alert("Passwords do not match!")
       return
     }
 
-    if (hasWaitedFiveMinutes) {
+    if (hasWaitedFiveMinutes && podcastAnswer) {
       const answer = podcastAnswer.value.trim().toLowerCase()
       if (answer !== 'rotten mango') {
         alert("Incorrect podcast answer! Go back and read the Terms and Conditions carefully.")
         return
       }
     }
+
+    // Submit to Supabase...
 
     signupSubmitBtn.disabled = true
     signupSubmitBtn.textContent = "Creating Account..."
