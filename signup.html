@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task Manager - Sign Up</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="images/icon.png" type="image/png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Task Manager - Sign Up</h1>
+        <p>Create a new account to start managing your tasks effectively.</p>
+
+        <main class="app-card">
+            <!-- New user registration view -->
+            <a href="index.html" class="back-btn-link">&larr; Back</a>
+                <h2>New User Registration</h2>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label for="signup-name">What can we call you?</label>
+                        <input type="text" id="signup-name" name="name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-username">Username:</label>
+                        <input type="text" id="signup-username" name="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password">Password:</label>
+                        <input type="password" id="signup-password" name="password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password-confirm">Confirm Password:</label>
+                        <input type="password" id="signup-password-confirm" name="password-confirm" required>
+                    </div>
+                    <!-- Terms and Conditions -->
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms-checkbox" disabled>
+                        <label for="terms-checkbox">I agree to the <a href="terms.html" id="open-terms-link">Terms and Conditions</a></label>
+                    </div>
+                    <!--Secret question-->
+                    <div class="input-group">
+                        <label for="podcast-answer">What's my favorite podcast?</label>
+                        <input type="text" id="podcast-answer" placeholder="Type the answer here..." required>
+                    </div>
+
+                    <button type="submit" id="signup-submit-btn" class="btn-primary-link" disabled>Sign Up</button>
+                </form>
+            </section>
+        </main>
+
+        <script type="module" src="app.js"></script>
+    </body>
+</html>

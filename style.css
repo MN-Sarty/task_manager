@@ -1,3 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+:root {
+    --bg-color: #fff5e4;
+    --text-color: #850e35;
+    --accent-color: #ee6983;
+    --card-bg: #ffc4c4;
+}
+
 body {
-    background-color: #fff1b5;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Lora', serif;
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem;
+}
+
+p {
+    font-size: 1.25rem;
+}
+
+.choice-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    text-decoration: none;
+}
+
+button {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: #850e35 1px solid;
+    border-radius: 10px;
+    display: inline-block;
+    width: min(80%, 300px);
+    text-align: center;      /* Keeps text inside the button centered */
+}
+button:hover {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+    transform: scale(1.05);
+}
+
+.back-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    display: inline-block;
+    border: none;
+    margin-top: 20px;
+    text-decoration: underline;
+}
+
+.back-btn:hover {
+    background-color: var(--card-bg);
+    color: var(--accent-color);
+}
+
+.btn-primary-link, .btn-secondary-link {
+    text-decoration: none;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: #850e35 1px solid;
+    border-radius: 10px;
+    display: inline-block;
+    width: min(80%, 300px);
+    text-align: center;      /* Keeps text inside the button centered */
+}
+
+.btn-primary-link:hover, .btn-secondary-link:hover {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+    transform: scale(1.05);
+}
+
+.back-btn-link {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    display: inline-block;
+    border: none;
+    margin-top: 20px;
+    text-decoration: underline;
+    color: var(--text-color);
+}
+
+.back-btn-link:hover {
+    background-color: var(--card-bg);
+    color: var(--accent-color);
+}
+
+.hidden {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--text-color) var(--bg-color);
+    scrollbar-width: auto;
+}
+
+::selection {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 14px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid var(--text-color);
+    border-radius: 10px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+.terms-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    margin: 16px 0;
+    text-align: left;
+}
+
+.terms-group a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/*Modal Overlay Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 10vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it overlays other content */
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.modal-content h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem;
+    margin-bottom: 16px;
+}
+
+.modal-content p {
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+
+.modal-content button {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    border-radius: 10px;
+}
+
+.modal-content button:hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+.modal-content .close-btn {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    margin-top: 10px;
+}
+
+.modal-content .close-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.modal-body {
+    overflow-y: auto;
+    text-align: left;
+    margin: 16px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+podcast-answer {
+    text-align: left;
+}
+
+.auth-toggle {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.auth-toggle a {
+  color: var(--text-color);
+  font-weight: bold;
+  margin-left: 4px;
 }

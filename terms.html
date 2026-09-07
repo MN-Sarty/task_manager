@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task Manager - Terms and Conditions</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="images/icon.png" type="image/png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <main class="app-card">
+            <a href="signup.html" class="back-btn-link">&larr; Back</a>
+            <h3 id="terms-modal" class="modal-overlay hidden">Terms and Conditions</h3>
+            <!-- Terms and Conditions Modal -->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>By using this application, you agree to the following terms and conditions...</p>
+                        <p>1. <strong>Password Privacy:</strong> I cannot read your password. It is encrypted and stored securely by Supabase, and I have no way to access it.</p>
+                        <p>2. <strong>Data Sales:</strong> I do not sell your personal data to third parties under any circumstances.</p>
+                        <p>3. <strong>Zero Tracking:</strong> I have absolutely no interest in tracking your activities or snooping on your daily life.</p>
+                        <p>4. <strong>Data Deletion:</strong> If you ever wish to delete your account, you can do so by contacting me, and I will promptly remove all your data from the system.</p>
+                        <p>5. <strong>Legal Disclaimer:</strong> If your task list contains any illegal or harmful content, I cannot be held accountable for storing that information, or any damages, because I am not a lawyer and it is none of my business.</p>
+                        <p>6. <strong>Changes to Terms:</strong> I reserve the right to update these terms and conditions at any time. Any changes will be communicated to users through the application.</p>
+                        <p>7. <strong>Contact Information:</strong> My favourite podcast is Rotten Mango. If you have any questions or concerns regarding these terms and conditions, please contact me at <a href="mailto:sartyndafy@gmail.com">sartyndafy@gmail.com</a>.</p>
+                        <p>8. <strong>Acceptance of Terms:</strong> By using this application, you acknowledge that you have read, understood, and agreed to these terms and conditions.</p>
+                        <p>9. <strong>Governing Law:</strong> These terms and conditions are governed by the laws of the jurisdiction in which the application is operated.</p>
+                        <p>10. <strong>Service Availability:</strong> I strive to keep the application available and functional, but I cannot guarantee uninterrupted service. Keep your tasks tidy and enjoy managing your productivity!</p>
+                    </div>
+                    <a href="signup.html?read_terms=true" id="close-terms-btn" class="btn-primary-link">I have read and agree to the terms and conditions</a>
+                </div>
+        </main>
+
+        <script type="module" src="app.js">
+            //record timestamp of when the user read the terms and conditions
+            if (!localStorage.getItem('terms_opened_at')) {
+                localStorage.setItem('terms_opened_at', Date.now().toString());
+            }
+        </script>
+    </body>
+</html>
