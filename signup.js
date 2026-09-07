@@ -36,7 +36,7 @@ if (termsCheckbox) {
 
     const termsOpenedAt = parseInt(localStorage.getItem('terms_opened_at') || Date.now().toString(), 10)
     const timeElapsedMs = Date.now() - termsOpenedAt
-    const fiveMinutesInMs = 5 * 60 * 1000
+    const fiveMinutesInMs = 3 * 60 * 1000
 
     if (timeElapsedMs < fiveMinutesInMs) {
       hasWaitedFiveMinutes = false
