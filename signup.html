@@ -28,6 +28,10 @@
                         <input type="text" id="signup-username" name="username" required>
                     </div>
                     <div class="input-group">
+                        <label for="signup-email">Email:</label>
+                        <input type="email" id="signup-email" name="email" required>
+                    </div>
+                    <div class="input-group">
                         <label for="signup-password">Password:</label>
                         <input type="password" id="signup-password" name="password" required>
                     </div>
@@ -45,12 +49,13 @@
                         <label for="podcast-answer">What's my favorite podcast?</label>
                         <input type="text" id="podcast-answer" placeholder="Type the answer here..." required>
                     </div>
-
-                    <button type="submit" id="signup-submit-btn" class="btn-primary-link" disabled>Sign Up</button>
+                    <a href="dash.html">
+                        <button type="submit" id="signup-submit-btn" class="btn-primary-link" disabled>Sign Up</button>
+                    </a>
                 </form>
             </section>
         </main>
 
-        <script type="module" src="app.js"></script>
+        <script type="module" src="signup.js"></script>
     </body>
 </html>
