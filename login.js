@@ -6,7 +6,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const loginForm = document.getElementById('login-form')
-const emailInput = document.getElementById('login-username') // Uses email input
+const emailInput = document.getElementById('login-email') // Uses email input
 const passwordInput = document.getElementById('login-password')
 const submitBtn = document.getElementById('login-submit-btn')
 
@@ -14,8 +14,8 @@ if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    const email = emailInput.value.trim()
-    const password = passwordInput.value.trim()
+    const email = emailInput.value.trim() || ''
+    const password = passwordInput.value.trim() || ''
 
     submitBtn.disabled = true
     submitBtn.textContent = "Logging in..."
