@@ -65,12 +65,6 @@ if (signupForm) {
     const name = nameInput ? nameInput.value : ''
     const email = emailInput ? emailInput.value.trim() : ''
     const password = passwordInput ? passwordInput.value : ''
-    const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : ''
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!")
-      return
-    }
 
     if (hasWaitedFiveMinutes && podcastAnswer) {
       const answer = podcastAnswer.value.trim().toLowerCase()
