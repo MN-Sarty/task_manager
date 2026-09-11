@@ -10,17 +10,20 @@ const menuToggle = document.getElementById('user-menu-toggle')
 const dropdown = document.getElementById('user-dropdown')
 const logoutBtn = document.getElementById('logout-btn')
 
-//Check authentication and load user data
+// Check authentication and load user data
 async function initDashboard() {
-    const { data: {user}, error} = await supabase.auth.getUser()
-//If not logged in or error, redirect to login page
-if (error || !user) {
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  // If not logged in or error, redirect to login page
+  if (error || !user) {
     window.location.href = 'login.html'
     return
+  }
+  
+  // Populate dropdown menu with user info
+  populateDropdown(user)
 }
-//Populate welcome heading dropdown menu
-populateDropdown(user)
-}
+
 // 1. Toggle Dropdown Menu Visibility
 if (menuToggle && dropdown) {
   menuToggle.addEventListener('click', (e) => {
@@ -35,15 +38,19 @@ if (menuToggle && dropdown) {
 }
 
 // 2. Populate Dropdown with Logged-in User Data
-async function populateDropdown(user) {
+function populateDropdown(user) {
   const nameEl = document.getElementById('dropdown-user-name')
   const emailEl = document.getElementById('dropdown-user-email')
 
   if (user) {
     if (nameEl) {
-        //Grab first name
-        const firstName = fullName.split('')[0] || 'User'
-        nameEl.textContent = firstName
+      // Define fullName first from user metadata or fallback to email
+      const fullName = user.user_metadata?.full_name || user.email.split('@')[0]
+      
+      // Grab just the first name (split by space)
+      const firstName = fullName.split(' ')[0] || 'User'
+      
+      nameEl.textContent = firstName
     }
     if (emailEl) emailEl.textContent = user.email
   }
@@ -61,5 +68,5 @@ if (logoutBtn) {
   })
 }
 
-//Run auth check on page load
+// Run auth check on page load
 initDashboard()
