@@ -5,14 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taskie - Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/Taskie.jpg" type="image/png">
+    <link rel="icon" href="images/Taskie.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <p>Working on it ☺</p>
+    <nav class="top-nav">
+        <!--Logo-->
+        <div class="nav-brand">
+            <img src="images/sublogo.png" alt="Alternative Taskie Logo" class="app-logo">
+            <span class="app-title">Taskie</span>
+        </div>
 
+        <!--User profile Section-->
+        <div class="nav-user">
+            <button class="user-dropdown-btn" id="user-menu-toggle">
+                <img src="images/user.png" alt="Profile Picture" class="nav-profile-pic">
+            </button>
+
+            <!--Dropdown Menu-->
+            <div class="dropdown-menu hidden" id="user-dropdown">
+                <div class="dropdown-header">
+                    <strong id="dropdown-user-name">Loading...</strong>
+                    <span id="dropdown-user-email">user@example.com</span>
+                </div>
+                <hr class="dropdown-divider">
+                <button id="logout-btn" class="dropdown-item logout-item">Log Out</button>
+            </div>
+        </div>
+    </nav>
 
     <script type="module" src="dash.js"></script>
 </body>
