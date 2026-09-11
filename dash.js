@@ -10,6 +10,17 @@ const menuToggle = document.getElementById('user-menu-toggle')
 const dropdown = document.getElementById('user-dropdown')
 const logoutBtn = document.getElementById('logout-btn')
 
+//Check authentication and load user data
+async function initDashboard() {
+    const { data: {user}, error} = await supabase.auth.getUser()
+//If not logged in or error, redirect to login page
+if (error || !user) {
+    window.location.href = 'login.html'
+    return
+}
+//Populate welcome heading dropdown menu
+populateDropdown(user)
+}
 // 1. Toggle Dropdown Menu Visibility
 if (menuToggle && dropdown) {
   menuToggle.addEventListener('click', (e) => {
@@ -49,3 +60,6 @@ if (logoutBtn) {
     }
   })
 }
+
+//Run auth check on page load
+initDashboard()
