@@ -49,8 +49,8 @@ button {
     text-align: center;      /* Keeps text inside the button centered */
 }
 button:hover {
-    background-color: var(--accent-color);
-    color: var(--card-bg);
+    background-color: var(--text-color);
+    color: var(--bg-color);
     transform: scale(1.05);
 }
 
@@ -348,3 +348,51 @@ podcast-answer {
     color: var(--text-color);
     background: transparent;
 }
+
+/*Dashboard*/
+/*Container layout*/
+.dash-container {
+    max-width: 900px;
+    margin: 10px;
+    padding: 1.5rem;
+}
+
+.dash-header {
+    margin-bottom: 2rem;
+}
+
+#welcome-title {
+    font-weight: 700;
+    margin: 0 0 1.25rem 0;
+    text-align: left;
+}
+
+.action-bar {
+    display: row;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.group-form {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 420px;
+}
+
+.group-form input {
+    flex: 1;
+    padding: 0.6rem 0.85rem;
+    background-color: var(--card-bg);
+    border: 1.5px solid var(--text-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.group-form input::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
+}
+

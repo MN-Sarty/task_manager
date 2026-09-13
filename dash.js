@@ -37,6 +37,9 @@ if (menuToggle && dropdown) {
   })
 }
 
+//Add welcome title element
+const welcomeTitle = document.getElementById('welcome-title')
+
 // 2. Populate Dropdown with Logged-in User Data
 function populateDropdown(user) {
   const nameEl = document.getElementById('dropdown-user-name')
@@ -49,7 +52,14 @@ function populateDropdown(user) {
       
       // Grab just the first name (split by space)
       const firstName = fullName.split(' ')[0] || 'User'
+
+      //Update greeting heading
+      if (welcomeTitle) {
+        welcomeTitle.textContent = `Welcome ${firstName}... ♥`
+      }
       
+      if (nameEl) nameEl.textContent = firstName
+      if (emailEl) emailEl.textContent = user.email
       nameEl.textContent = firstName
     }
     if (emailEl) emailEl.textContent = user.email

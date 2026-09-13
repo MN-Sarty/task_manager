@@ -35,7 +35,34 @@
             </div>
         </div>
     </nav>
-
+    <!--Dashboard main area-->
+    <main class="dash-container">
+        <!--Header and action section-->
+        <header class="dash-header">
+            <div class="welcome-section">
+                <h1 id="welcome-title" title="Yes, we know your name ☺" style="font-size: 30px">
+                    Welcome... ♥
+                </h1>
+            </div>
+            <!--Create task group-->
+            <div class="action-bar">
+                <form id="create-group-form" class="group-form">
+                    <input 
+                        type="text"
+                        id="group-name-input"
+                        placeholder="Enter group name..."
+                        required
+                        autocomplete="off"
+                    />
+                    <button type="submit" class="btn-create">+ Create Group</button>
+                </form>
+            </div>
+        </header>
+        <!--Group cards grid-->
+        <section id="groups-container" class="groups-grid">
+            <!--Group cards here-->
+        </section>
+    </main>
     <script type="module" src="dash.js"></script>
 </body>
 </html>
