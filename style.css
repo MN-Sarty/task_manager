@@ -396,6 +396,58 @@ podcast-answer {
     opacity: 0.6;
 }
 
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(autofill, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.group-card {
+    background-color: var(--card-bg);
+    border: 1.5px solid var(--text-color);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+}
+
+.group-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-title {
+    font-family: 'Lora', serif;
+    color: var(--text-color);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.delete-group-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 1.1rem;
+}
+
+.delete-group-btn:hover {
+  opacity: 1;
+}
+
+.empty-state {
+  color: var(--text-color);
+  opacity: 0.7;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
     .dash-container {
         padding: 0.75rem 1rem;
