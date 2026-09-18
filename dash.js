@@ -181,13 +181,20 @@ async function loadTasksForGroup(groupId) {
 
       textSpan.classList.toggle('completed', isChecked);
 
-      await supabase
+      const { error } = await supabase
         .from('tasks')
         .update({
           is_completed: isChecked,
           completed_at: isChecked ? new Date().toISOString() : null
         })
         .eq('id', task.id);
+
+      if (error) {
+        console.error('Task update failed:', error.message)
+        //revert visual checkbox state if db update fails
+        e.target.checked = !isChecked;
+        textSpan.classList.toggle('completed', !isChecked);
+      }
     });
 
     taskListEl.appendChild(li);
