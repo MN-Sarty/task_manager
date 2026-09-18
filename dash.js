@@ -15,45 +15,40 @@ const createGroupForm = document.getElementById('create-group-form');
 const groupNameInput = document.getElementById('group-name-input');
 const groupsContainer = document.getElementById('groups-container');
 
-// 1. Check Authentication & Load User Data
+// 1. Check Authentication & Initialize Dashboard
 async function initDashboard() {
   const { data: { user }, error } = await supabase.auth.getUser();
 
-  // If not logged in or error, redirect to login page
   if (error || !user) {
     window.location.href = 'login.html';
     return;
   }
 
-  // Populate dropdown menu with user info and load groups
   populateDropdown(user);
   fetchGroups(user.id);
 }
 
-// 2. Toggle Dropdown Menu Visibility
+// 2. Dropdown Visibility Toggle
 if (menuToggle && dropdown) {
   menuToggle.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevent click from immediately closing it
+    e.stopPropagation();
     dropdown.classList.toggle('hidden');
   });
 
-  // Close dropdown if user clicks anywhere else on the page
   document.addEventListener('click', () => {
     dropdown.classList.add('hidden');
   });
 }
 
-// 3. Populate Dropdown & Header with Logged-in User Data
+// 3. Populate Header & Profile Data
 function populateDropdown(user) {
   const nameEl = document.getElementById('dropdown-user-name');
   const emailEl = document.getElementById('dropdown-user-email');
 
   if (user) {
-    // Define fullName first from user metadata or fallback to email
     const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
     const firstName = fullName.split(' ')[0] || 'User';
 
-    // Update greeting heading
     if (welcomeTitle) {
       welcomeTitle.textContent = `Welcome ${firstName}... ♥`;
     }
@@ -63,7 +58,7 @@ function populateDropdown(user) {
   }
 }
 
-// 4. Fetch and Display Groups
+// 4. Fetch and Render Task Groups
 async function fetchGroups(userId) {
   if (!groupsContainer) return;
 
@@ -81,7 +76,7 @@ async function fetchGroups(userId) {
   renderGroups(groups);
 }
 
-// 5. Render Cards in DOM
+// 5. Render Group Cards & Attach Task Handlers
 function renderGroups(groups) {
   groupsContainer.innerHTML = '';
 
@@ -90,7 +85,7 @@ function renderGroups(groups) {
     return;
   }
 
-  groups.forEach((group) => {
+  groups.forEach(async (group) => {
     const card = document.createElement('div');
     card.className = 'group-card';
     card.innerHTML = `
@@ -98,11 +93,116 @@ function renderGroups(groups) {
         <h3 class="group-title">${group.name}</h3>
         <button class="delete-group-btn" data-id="${group.id}">&times;</button>
       </div>
+      <ul class="task-list" id="tasks-${group.id}"></ul>
+      <form class="add-task-form" data-group-id="${group.id}">
+        <input type="text" class="add-task-input" placeholder="Add task..." required />
+        <button type="submit" class="add-task-btn">+</button>
+      </form>
     `;
+
     groupsContainer.appendChild(card);
+    await loadTasksForGroup(group.id);
   });
 
-  // Attach delete handlers
+  attachGroupEventHandlers();
+}
+
+// 6. Fetch Tasks & Clean Up 24-Hour Old Completed Items
+async function loadTasksForGroup(groupId) {
+  const taskListEl = document.getElementById(`tasks-${groupId}`);
+  if (!taskListEl) return;
+
+  const { data: tasks, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .eq('group_id', groupId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching tasks:', error.message);
+    return;
+  }
+
+  taskListEl.innerHTML = '';
+  const now = new Date();
+
+  tasks.forEach(async (task) => {
+    // 24-hour auto-deletion logic
+    if (task.is_completed && task.completed_at) {
+      const completedTime = new Date(task.completed_at);
+      const hoursPassed = (now - completedTime) / (1000 * 60 * 60);
+
+      if (hoursPassed >= 24) {
+        await supabase.from('tasks').delete().eq('id', task.id);
+        return;
+      }
+    }
+
+    const li = document.createElement('li');
+    li.className = 'task-item';
+    li.innerHTML = `
+      <input 
+        type="checkbox" 
+        class="task-checkbox" 
+        data-task-id="${task.id}" 
+        ${task.is_completed ? 'checked' : ''}
+      />
+      <span class="task-text ${task.is_completed ? 'completed' : ''}">${task.text}</span>
+    `;
+
+    // Toggle Checkbox / Completion State
+    const checkbox = li.querySelector('.task-checkbox');
+    checkbox.addEventListener('change', async (e) => {
+      const isChecked = e.target.checked;
+      const textSpan = li.querySelector('.task-text');
+
+      textSpan.classList.toggle('completed', isChecked);
+
+      await supabase
+        .from('tasks')
+        .update({
+          is_completed: isChecked,
+          completed_at: isChecked ? new Date().toISOString() : null
+        })
+        .eq('id', task.id);
+    });
+
+    taskListEl.appendChild(li);
+  });
+}
+
+// 7. Event Handlers for Creating Tasks & Deleting Groups
+function attachGroupEventHandlers() {
+  // Add Task inside Group Card
+  document.querySelectorAll('.add-task-form').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const groupId = form.getAttribute('data-group-id');
+      const input = form.querySelector('.add-task-input');
+      const taskText = input.value.trim();
+
+      if (!taskText) return;
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { error } = await supabase.from('tasks').insert([{
+          group_id: groupId,
+          user_id: user.id,
+          text: taskText
+        }]);
+
+        if (!error) {
+          input.value = '';
+          loadTasksForGroup(groupId);
+        } else {
+          console.error('Error adding task:', error.message);
+        }
+      }
+    });
+  });
+
+  // Delete Group Card
   document.querySelectorAll('.delete-group-btn').forEach((btn) => {
     btn.addEventListener('click', async (e) => {
       const groupId = e.target.getAttribute('data-id');
@@ -111,7 +211,7 @@ function renderGroups(groups) {
   });
 }
 
-// 6. Create New Group Form Event
+// 8. Create Group Handler
 if (createGroupForm) {
   createGroupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -129,13 +229,13 @@ if (createGroupForm) {
         console.error('Error creating group:', error.message);
       } else {
         groupNameInput.value = '';
-        fetchGroups(user.id); // Refresh list
+        fetchGroups(user.id);
       }
     }
   });
 }
 
-// 7. Delete Group Handler
+// 9. Delete Group Handler
 async function deleteGroup(groupId) {
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -149,7 +249,7 @@ async function deleteGroup(groupId) {
   }
 }
 
-// 8. Supabase Log Out Handler
+// 10. Logout Handler
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
     const { error } = await supabase.auth.signOut();
@@ -161,5 +261,5 @@ if (logoutBtn) {
   });
 }
 
-// Run auth check on page load at the end
+// Launch application on page load
 initDashboard();
