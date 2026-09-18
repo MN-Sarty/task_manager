@@ -73,6 +73,29 @@ async function fetchGroups(userId) {
     return;
   }
 
+  // Use for...of instead of forEach for proper async/await handling
+  for (const group of groups) {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.innerHTML = `
+      <div class="group-card-header">
+        <h3 class="group-title">${group.name}</h3>
+        <button class="delete-group-btn" data-id="${group.id}">&times;</button>
+      </div>
+      <ul class="task-list" id="tasks-${group.id}"></ul>
+      <form class="add-task-form" data-group-id="${group.id}">
+        <input type="text" class="add-task-input" placeholder="Add task..." required />
+        <button type="submit" class="add-task-btn">+</button>
+      </form>
+    `;
+
+    groupsContainer.appendChild(card);
+
+    // Load tasks for this specific card
+    await loadTasksForGroup(group.id);
+  }
+
+  attachGroupEventHandlers();
   renderGroups(groups);
 }
 
