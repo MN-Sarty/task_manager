@@ -397,10 +397,11 @@ podcast-answer {
 }
 
 .groups-grid {
-    column-count: 3;
-    column-gap: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(autofit, minmax(280px, 1fr));
+    gap: 1.25rem;
     width: 100%;
-    margin-top: 1.5rem;
+    margin: 1.5rem auto 0 auto;
 }
 
 .group-card {
@@ -416,6 +417,7 @@ podcast-answer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: fit-content;
 }
 
 .group-card-header {
