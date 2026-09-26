@@ -170,7 +170,11 @@ async function loadTasksForGroup(groupId) {
         data-task-id="${task.id}" 
         ${task.is_completed ? 'checked' : ''}
       />
-      <span class="task-text ${task.is_completed ? 'completed' : ''}">${task.text}</span>
+      <span class="task-text ${task.is_completed ? 'completed' : ''}"
+      contenteditable="true"
+      data-task-id="${task.id}"
+      title="Click to edit task"
+      >${task.text}</span>
     `;
 
     // Toggle Checkbox / Completion State
@@ -196,6 +200,43 @@ async function loadTasksForGroup(groupId) {
         textSpan.classList.toggle('completed', !isChecked);
       }
     });
+
+    //text editing
+    const textSpan = li.querySelector('.task-text');
+
+    //prevent in line breaks inside task names
+    textSpan.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        textSpan.getBoundingClientRect(); //triggers blur event to save
+      }
+    });
+
+    // Save changes to Supabase when user clicks away
+  textSpan.addEventListener('blur', async () => {
+    const updatedText = textSpan.textContent.trim();
+
+    // If text is empty, revert to original task text
+    if (!updatedText) {
+      textSpan.textContent = task.text;
+      return;
+    }
+
+    // Only update DB if the text actually changed
+    if (updatedText !== task.text) {
+      const { error } = await supabase
+        .from('tasks')
+        .update({ text: updatedText })
+        .eq('id', task.id);
+
+      if (error) {
+        console.error('Error updating task text:', error.message);
+        textSpan.textContent = task.text; // Revert on failure
+      } else {
+        task.text = updatedText; // Update local state
+      }
+    }
+  });
 
     taskListEl.appendChild(li);
   });

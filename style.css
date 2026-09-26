@@ -471,12 +471,13 @@ podcast-answer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  align-items: flex-start;
 }
 
 /* Individual Task Row */
 .task-item {
   display: flex;
-  align-items: center;
+  align-items: left;
   gap: 0.5rem;
   font-size: 0.9rem;
   color: var(--text-color);
@@ -540,6 +541,23 @@ podcast-answer {
   cursor: pointer;
 }
 
+/* Editable Task Text Styling */
+.task-text[contenteditable="true"] {
+  outline: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: var(--card-bg) 0.2s ease, var(--text-color) 0.2s ease;
+  border: 1px solid transparent;
+  cursor: text;
+  flex: 1;
+}
+
+/* Hover state to indicate editability */
+.task-text[contenteditable="true"]:hover {
+  background-color: var(--text-color);
+  color: var(--card-bg);
+}
+
 @media (max-width: 900px) {
   .groups-grid {
     column-count: 2; /* 2 columns for tablets/medium screens */
@@ -567,6 +585,9 @@ podcast-answer {
     .groups-grid {
         column-count: 1; /* 1 full-width column on mobile phones */
         column-gap: 0;
+  }
+  .task-item {
+    align-items: left;
   }
     
 }
