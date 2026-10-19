@@ -119,6 +119,7 @@ function renderGroups(groups) {
       <ul class="task-list" id="tasks-${group.id}"></ul>
       <form class="add-task-form" data-group-id="${group.id}">
         <input type="text" class="add-task-input" placeholder="Add task..." required />
+        <input type="datetime-local" class="add-task-date" title="Select due date and time..." /> 
         <button type="submit" class="add-task-btn">+</button>
       </form>
     `;
@@ -128,6 +129,39 @@ function renderGroups(groups) {
   });
 
   attachGroupEventHandlers();
+// Inside attachGroupEventHandlers()...
+document.querySelectorAll('.add-task-form').forEach((form) => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const groupId = form.getAttribute('data-group-id');
+    const input = form.querySelector('.add-task-input');
+    const dateInput = form.querySelector('.add-task-date');
+    
+    const taskText = input.value.trim();
+    const dueDate = dateInput.value ? new Date(dateInput.value).toISOString() : null;
+
+    if (!taskText) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const { error } = await supabase.from('tasks').insert([{
+        group_id: groupId,
+        user_id: user.id,
+        text: taskText,
+        due_date: dueDate // Saves the calendar/clock value to your new database column
+      }]);
+
+      if (!error) {
+        input.value = '';
+        dateInput.value = ''; // Reset date picker
+        loadTasksForGroup(groupId);
+      } else {
+        console.error('Error adding task:', error.message);
+      }
+    }
+  });
+});
 }
 
 // 6. Fetch Tasks & Clean Up 24-Hour Old Completed Items
