@@ -366,5 +366,107 @@ if (logoutBtn) {
   });
 }
 
+//Push notifications
+const VAPID_PUBLIC_KEY = 'BJzuxQv3ClX1FXUTo1SSNG1hL6bCKgov3YiqE0x7r0gECJVYjNxLOXIVd3s0ncLoQd_5nJyvx233_inpm2hcxAY'; // Replace with your public key
+
+async function registerPushNotifications() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    console.warn('Push notifications are not supported by this browser.');
+    return;
+  }
+
+  try {
+    // 1. Register the Service Worker
+    const registration = await navigator.serviceWorker.register('/sw.js');
+    console.log('Service Worker registered successfully.');
+
+    // 2. Request Notification Permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      alert('Notification permission denied.');
+      return;
+    }
+
+    // 3. Subscribe the user to Push Notifications
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    // 4. Save the subscription object to Supabase (so your server knows where to send alerts)
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('push_subscriptions').upsert({
+        user_id: user.id,
+        subscription_json: subscription
+      });
+      alert('Notifications enabled successfully! ♥');
+    }
+  } catch (error) {
+    console.error('Error setting up push notifications:', error);
+  }
+}
+
+// Helper function to convert VAPID key
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// (Optional) Call registerPushNotifications() when a user clicks an "Enable Notifications" button in your UI
+
+const notificationToggle = document.getElementById('notification-toggle');
+
+// 1. Sync toggle state on page load
+if (notificationToggle) {
+  if (Notification.permission === 'granted') {
+    notificationToggle.checked = true;
+  }
+
+  // 2. Listen for flips on the toggle
+  notificationToggle.addEventListener('change', async (e) => {
+    if (e.target.checked) {
+      // User turned it ON
+      await registerPushNotifications();
+      if (Notification.permission !== 'granted') {
+        // If they denied the browser prompt, flip the toggle back off
+        e.target.checked = false;
+      }
+    } else {
+      // User turned it OFF (Optional: remove subscription from Supabase)
+      await disablePushNotifications();
+    }
+  });
+}
+
+// Optional helper to clean up subscription if toggled off
+async function disablePushNotifications() {
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration) {
+      const subscription = await registration.pushManager.getSubscription();
+      if (subscription) {
+        await subscription.unsubscribe();
+      }
+    }
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('push_subscriptions').delete().eq('user_id', user.id);
+    }
+    console.log('Notifications disabled.');
+  } catch (error) {
+    console.error('Error disabling notifications:', error);
+  }
+}
 // Launch application on page load
 initDashboard();
+
+//Public npm key BJzuxQv3ClX1FXUTo1SSNG1hL6bCKgov3YiqE0x7r0gECJVYjNxLOXIVd3s0ncLoQd_5nJyvx233_inpm2hcxAY
+//Private npm key WThiJX1Jxq4bmxVvvcUlVarFH6npjdWxQLByFihDsNc

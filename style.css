@@ -571,6 +571,67 @@ podcast-answer {
   color: var(--card-bg);
 }
 
+/* Notification Toggle Container */
+.notification-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 16px;
+  color: var(--text-color);
+  background: var(--card-bg);
+  border-radius: 20px;
+  width: 100%;
+}
+
+/* Switch Base Layout */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The Sliding Track */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--card-bg); /* Card color when off */
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 22px;
+  border: 1px solid var(--text-color);
+}
+
+/* The Moving Circle / Knob */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--text-color);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Checked State (Turned On) */
+.switch input:checked + .slider {
+  background-color: var(--text-color); /* #ee6983 */
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(21px);
+  background-color: #fff5e4; /* Background color inside the thumb when active */
+}
 @media (max-width: 900px) {
   .groups-grid {
     column-count: 2; /* 2 columns for tablets/medium screens */

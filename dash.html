@@ -30,7 +30,15 @@
                     <strong id="dropdown-user-name">Loading...</strong>
                     <span id="dropdown-user-email">user@example.com</span>
                 </div>
-                <hr class="dropdown-divider">
+                <div class="notification-toggle-wrapper">
+                        <!--Toggle button comes first-->
+                        <label class="switch">
+                            <input type="checkbox" id="notification-toggle">
+                            <span class="slider"></span>
+                        </label>
+                        <!-- Text comes after -->
+                        <span class="toggle-label">Enable reminders</span>
+                    </div>
                 <button id="logout-btn" class="dropdown-item logout-item">Log Out</button>
             </div>
         </div>
