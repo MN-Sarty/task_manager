@@ -632,6 +632,25 @@ podcast-answer {
   transform: translateX(21px);
   background-color: #fff5e4; /* Background color inside the thumb when active */
 }
+
+/* Card placeholder state while dragging */
+.group-card-ghost {
+  opacity: 0.4;
+  background-color: var(--card-bg);
+  border: 2px dashed var(--text-color);
+}
+
+/* Touch feedback state */
+.group-card {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.group-card:active {
+  cursor: grabbing;
+}
+
 @media (max-width: 900px) {
   .groups-grid {
     column-count: 2; /* 2 columns for tablets/medium screens */

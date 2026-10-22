@@ -58,7 +58,7 @@ function populateDropdown(user) {
   }
 }
 
-// 4. Fetch and Render Task Groups
+// 4. Fetch, order by position and Render Task Groups
 async function fetchGroups(userId) {
   if (!groupsContainer) return;
 
@@ -66,17 +66,21 @@ async function fetchGroups(userId) {
     .from('groups')
     .select('*')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+    .order('position', { ascending: true, nullsFirst: false });
 
   if (error) {
     console.error('Error fetching groups:', error.message);
     return;
   }
 
+  await renderGroups(groups);
+  initSortableGroupReordering();
+
   // Use for...of instead of forEach for proper async/await handling
   for (const group of groups) {
     const card = document.createElement('div');
     card.className = 'group-card';
+    card.dataset.groupId = group.id;
     card.innerHTML = `
       <div class="group-card-header">
         <h3 class="group-title">${group.name}</h3>
@@ -97,6 +101,35 @@ async function fetchGroups(userId) {
 
   attachGroupEventHandlers();
   renderGroups(groups);
+}
+
+// 2. Initialize Touch/Mouse Drag & Drop Reordering
+function initSortableGroupReordering() {
+  if (!groupsContainer) return;
+
+  Sortable.create(groupsContainer, {
+    animation: 200,
+    delay: 300,          // Long press duration in ms for touch screens (mobile)
+    delayOnTouchOnly: true, // Only delay long press on mobile touch screens
+    touchStartThreshold: 5, // Pixels before drag cancels touch scrolling
+    ghostClass: 'group-card-ghost', // Styling for card being dragged
+
+    onEnd: async function () {
+      // Get all current group cards in new DOM order
+      const cards = groupsContainer.querySelectorAll('.group-card');
+      
+      // Update each group's position in Supabase
+      const updates = Array.from(cards).map((card, index) => {
+        const groupId = card.dataset.groupId;
+        return supabase
+          .from('groups')
+          .update({ position: index })
+          .eq('id', groupId);
+      });
+
+      await Promise.all(updates);
+    }
+  });
 }
 
 // 5. Render Group Cards & Attach Task Handlers
