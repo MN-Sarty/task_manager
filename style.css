@@ -397,7 +397,7 @@ podcast-answer {
 
 .groups-grid {
     /*4 columns*/
-    column-count: 3;
+    column-count: 2;
     column-gap: 1rem;
     width: 100%;
     margin: 1.5rem;
