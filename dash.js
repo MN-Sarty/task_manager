@@ -452,9 +452,66 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
+const blueThemeToggle = document.getElementById('blue-theme-toggle');
+const logoImg = document.querySelector('.app-logo');
+const profileImg = document.querySelector('.nav-profile-pic');
+
+// 1. Check saved theme preference on page load
+const savedTheme = localStorage.getItem('taskie_theme');
+if (savedTheme === 'blue') {
+  document.body.classList.add('blue-theme');
+  if (blueThemeToggle) blueThemeToggle.checked = true;
+  updateThemeIcons(true);
+} else {
+  updateThemeIcons(false);
+}
+
+
+// 2. Listen for clicks on the theme dot toggle
+if (blueThemeToggle) {
+  blueThemeToggle.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      // Switch to Blue Theme
+      document.body.classList.add('blue-theme');
+      localStorage.setItem('taskie_theme', 'blue');
+      updateThemeIcons(true);
+    } else {
+      // Switch back to Pink Theme
+      document.body.classList.remove('blue-theme');
+      localStorage.setItem('taskie_theme', 'default');
+      updateThemeIcons(false);
+    }
+  });
+}
+
+
+// Function to update icon sources based on theme state
+function updateThemeIcons(isBlue) {
+  if (logoImg) {
+    // Switch to your blue sublogo when blue theme is active, otherwise default to pink
+    logoImg.src = isBlue ? 'images/sublogo-blue.png' : 'images/sublogo.png';
+  }
+  if (profileImg) {
+    // Switch to your blue user icon when blue theme is active, otherwise default to pink
+    profileImg.src = isBlue ? 'images/user-blue.png' : 'images/user.png';
+  }
+}
+
 // (Optional) Call registerPushNotifications() when a user clicks an "Enable Notifications" button in your UI
 
 const notificationToggle = document.getElementById('notification-toggle');
+
+// Register Service Worker for Notifications
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service Worker registered successfully:', registration.scope);
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
+    }
+  });
+}
 
 // 1. Sync toggle state on page load
 if (notificationToggle) {
