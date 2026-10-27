@@ -58,7 +58,7 @@ function populateDropdown(user) {
   }
 }
 
-// 4. Fetch, order by position and Render Task Groups
+// 3. Fetch groups from Supabase and kick off rendering
 async function fetchGroups(userId) {
   if (!groupsContainer) return;
 
@@ -73,37 +73,12 @@ async function fetchGroups(userId) {
     return;
   }
 
+  // Pass groups to renderGroups once, then initialize drag-and-drop
   await renderGroups(groups);
   initSortableGroupReordering();
-
-  // Use for...of instead of forEach for proper async/await handling
-  for (const group of groups) {
-    const card = document.createElement('div');
-    card.className = 'group-card';
-    card.dataset.groupId = group.id;
-    card.innerHTML = `
-      <div class="group-card-header">
-        <h3 class="group-title">${group.name}</h3>
-        <button class="delete-group-btn" data-id="${group.id}">&times;</button>
-      </div>
-      <ul class="task-list" id="tasks-${group.id}"></ul>
-      <form class="add-task-form" data-group-id="${group.id}">
-        <input type="text" class="add-task-input" placeholder="Add task..." required />
-        <button type="submit" class="add-task-btn">+</button>
-      </form>
-    `;
-
-    groupsContainer.appendChild(card);
-
-    // Load tasks for this specific card
-    await loadTasksForGroup(group.id);
-  }
-
-  attachGroupEventHandlers();
-  renderGroups(groups);
 }
 
-// 2. Initialize Touch/Mouse Drag & Drop Reordering
+// 4. Initialize Touch/Mouse Drag & Drop Reordering
 function initSortableGroupReordering() {
   if (!groupsContainer) return;
 
@@ -132,8 +107,8 @@ function initSortableGroupReordering() {
   });
 }
 
-// 5. Render Group Cards & Attach Task Handlers
-function renderGroups(groups) {
+// 5. Render Group Cards & Load Their Tasks
+async function renderGroups(groups) {
   groupsContainer.innerHTML = '';
 
   if (!groups || groups.length === 0) {
@@ -141,9 +116,11 @@ function renderGroups(groups) {
     return;
   }
 
-  groups.forEach(async (group) => {
+  // Use for...of instead of forEach to safely await task loading per card
+  for (const group of groups) {
     const card = document.createElement('div');
     card.className = 'group-card';
+    card.dataset.groupId = group.id; // Crucial for selection and reordering
     card.innerHTML = `
       <div class="group-card-header">
         <h3 class="group-title">${group.name}</h3>
@@ -159,10 +136,9 @@ function renderGroups(groups) {
 
     groupsContainer.appendChild(card);
     await loadTasksForGroup(group.id);
-  });
-
-  attachGroupEventHandlers();
+  }
 }
+
 // 6. Fetch Tasks & Clean Up 24-Hour Old Completed Items
 async function loadTasksForGroup(groupId) {
   const taskListEl = document.getElementById(`tasks-${groupId}`);
