@@ -162,41 +162,7 @@ function renderGroups(groups) {
   });
 
   attachGroupEventHandlers();
-// Inside attachGroupEventHandlers()...
-document.querySelectorAll('.add-task-form').forEach((form) => {
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const groupId = form.getAttribute('data-group-id');
-    const input = form.querySelector('.add-task-input');
-    const dateInput = form.querySelector('.add-task-date');
-    
-    const taskText = input.value.trim();
-    const dueDate = dateInput.value ? new Date(dateInput.value).toISOString() : null;
-
-    if (!taskText) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (user) {
-      const { error } = await supabase.from('tasks').insert([{
-        group_id: groupId,
-        user_id: user.id,
-        text: taskText,
-        due_date: dueDate // Saves the calendar/clock value to your new database column
-      }]);
-
-      if (!error) {
-        input.value = '';
-        dateInput.value = ''; // Reset date picker
-        loadTasksForGroup(groupId);
-      } else {
-        console.error('Error adding task:', error.message);
-      }
-    }
-  });
-});
 }
-
 // 6. Fetch Tasks & Clean Up 24-Hour Old Completed Items
 async function loadTasksForGroup(groupId) {
   const taskListEl = document.getElementById(`tasks-${groupId}`);
@@ -458,9 +424,8 @@ const logoImg = document.querySelector('.app-logo');
 const profileImg = document.querySelector('.nav-profile-pic');
 
 // Helper function to manage themes and icons
-// Helper function to manage themes and icons
 function setTheme(themeName) {
-  // Clear existing themes
+  // Clear existing theme classes and reset check states
   document.body.classList.remove('blue-theme', 'red-theme');
   if (blueToggle) blueToggle.checked = false;
   if (redToggle) redToggle.checked = false;
@@ -474,7 +439,7 @@ function setTheme(themeName) {
     document.body.classList.add('red-theme');
     if (redToggle) redToggle.checked = true;
     localStorage.setItem('taskie_theme', 'red');
-    updateIcons('red'); // <--- CHANGED FROM 'pink' TO 'red' HERE!
+    updateIcons('red');
   } else {
     localStorage.setItem('taskie_theme', 'default');
     updateIcons('default');
@@ -507,24 +472,16 @@ function updateIcons(theme) {
 const savedTheme = localStorage.getItem('taskie_theme') || 'default';
 setTheme(savedTheme);
 
-// 2. Event Listeners for the Dots
+// 2. Event Listeners
 if (blueToggle) {
   blueToggle.addEventListener('change', (e) => {
-    if (e.target.checked) {
-      setTheme('blue');
-    } else {
-      setTheme('default');
-    }
+    setTheme(e.target.checked ? 'blue' : 'default');
   });
 }
 
 if (redToggle) {
   redToggle.addEventListener('change', (e) => {
-    if (e.target.checked) {
-      setTheme('red');
-    } else {
-      setTheme('default');
-    }
+    setTheme(e.target.checked ? 'red' : 'default');
   });
 }
 
@@ -550,6 +507,45 @@ async function disablePushNotifications() {
 }
 // Launch application on page load
 initDashboard();
+
+//--- Global Task Submission Handler (Prevents Duplicate Task Creation) ---
+if (groupsContainer) {
+  groupsContainer.addEventListener('submit', async (e) => {
+    // Only trigger if the submitted element is a task form
+    if (!e.target.classList.contains('add-task-form')) return;
+    
+    e.preventDefault();
+    
+    const form = e.target;
+    const groupId = form.getAttribute('data-group-id');
+    const input = form.querySelector('.add-task-input');
+    const dateInput = form.querySelector('.add-task-date');
+    
+    const taskText = input.value.trim();
+    const dueDate = (dateInput && dateInput.value) ? new Date(dateInput.value).toISOString() : null;
+
+    if (!taskText) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const { error } = await supabase.from('tasks').insert([{
+        group_id: groupId,
+        user_id: user.id,
+        text: taskText,
+        due_date: dueDate
+      }]);
+
+      if (!error) {
+        input.value = '';
+        if (dateInput) dateInput.value = ''; // Reset date picker
+        loadTasksForGroup(groupId);
+      } else {
+        console.error('Error adding task:', error.message);
+      }
+    }
+  });
+}
 
 //Public npm key BJzuxQv3ClX1FXUTo1SSNG1hL6bCKgov3YiqE0x7r0gECJVYjNxLOXIVd3s0ncLoQd_5nJyvx233_inpm2hcxAY
 //Private npm key WThiJX1Jxq4bmxVvvcUlVarFH6npjdWxQLByFihDsNc
