@@ -42,7 +42,7 @@ button {
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    border: #850e35 1px solid;
+    border: var(--text-color) 1px solid;
     border-radius: 10px;
     display: inline-block;
     width: min(80%, 300px);
@@ -79,7 +79,7 @@ button:hover {
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    border: #850e35 1px solid;
+    border: var(--text-color) 1px solid;
     border-radius: 10px;
     display: inline-block;
     width: min(80%, 300px);
@@ -295,7 +295,9 @@ podcast-answer {
 }
 
 .app-logo {
-    object-fit: contain;
+    width: 32px;
+    height: auto;
+    vertical-align: middle;
 }
 
 /*User icon*/
@@ -681,13 +683,14 @@ podcast-answer {
     align-items: center;
     margin: 0.5rem 0;
     width: 100%;
+    gap: 12px;
 }
 
 .theme-dot-switch {
     position: relative;
     display: inline-block;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
 }
 
@@ -703,15 +706,19 @@ podcast-answer {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #C7D9E5;
     border-radius: 50%;
-    border: 1px solid #577C8E;
     transition: transform 0.2s ease, box shadow 0.2s ease;
 }
 
-/* When the body has .blue-theme, turn the dot pink so users can click it to go back */
-body.blue-theme .theme-dot {
-  background-color: #ffc4c4; /* Pink dot when in blue mode */
+/*dot colours*/
+.blue-dot {
+    background-color: #577c8e;
+    border: 1px solid #2f4157;
+}
+
+.red-dot {
+    background-color: #97101b;
+    border: 1px solid #a54b30;
 }
 
 /*Blue theme override*/
@@ -736,6 +743,27 @@ html:has(body.blue-theme)::-webkit-scrollbar-thumb {
 body.blue-theme::-webkit-scrollbar-thumb:hover,
 html:has(body.blue-theme)::-webkit-scrollbar-thumb:hover {
   background-color: #2f4157; /* Dark navy text color */
+}
+
+/* --- Red Theme Overrides --- */
+body.red-theme {
+  --bg-color: #fcf1e2;
+  --card-bg: #d8b69c;
+  --accent-color: #a54b30;
+  --text-color: #97101b;
+  background-color: var(--bg-color);
+}
+
+/* When Blue Theme is active, the blue dot turns pink */
+body.blue-theme .blue-dot {
+  background-color: #ffc4c4;
+  border: 1px solid #ee6983;
+}
+
+/* When Red Theme is active, the red dot turns pink */
+body.red-theme .red-dot {
+  background-color: #ffc4c4;
+  border: 1px solid #ee6983;
 }
 
 @media (max-width: 1024px) {

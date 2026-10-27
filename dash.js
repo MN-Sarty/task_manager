@@ -452,85 +452,78 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-const blueThemeToggle = document.getElementById('blue-theme-toggle');
+const blueToggle = document.getElementById('blue-theme-toggle');
+const redToggle = document.getElementById('red-theme-toggle');
 const logoImg = document.querySelector('.app-logo');
 const profileImg = document.querySelector('.nav-profile-pic');
 
-// 1. Check saved theme preference on page load
-const savedTheme = localStorage.getItem('taskie_theme');
-if (savedTheme === 'blue') {
-  document.body.classList.add('blue-theme');
-  if (blueThemeToggle) blueThemeToggle.checked = true;
-  updateThemeIcons(true);
-} else {
-  updateThemeIcons(false);
+// Helper function to manage themes and icons
+// Helper function to manage themes and icons
+function setTheme(themeName) {
+  // Clear existing themes
+  document.body.classList.remove('blue-theme', 'red-theme');
+  if (blueToggle) blueToggle.checked = false;
+  if (redToggle) redToggle.checked = false;
+
+  if (themeName === 'blue') {
+    document.body.classList.add('blue-theme');
+    if (blueToggle) blueToggle.checked = true;
+    localStorage.setItem('taskie_theme', 'blue');
+    updateIcons('blue');
+  } else if (themeName === 'red') {
+    document.body.classList.add('red-theme');
+    if (redToggle) redToggle.checked = true;
+    localStorage.setItem('taskie_theme', 'red');
+    updateIcons('red'); // <--- CHANGED FROM 'pink' TO 'red' HERE!
+  } else {
+    localStorage.setItem('taskie_theme', 'default');
+    updateIcons('default');
+  }
 }
 
+function updateIcons(theme) {
+  const icons = {
+    blue: {
+      logo: 'images/sublogo-blue.png',
+      user: 'images/user-blue.png'
+    },
+    red: {
+      logo: 'images/sublogo-red.png',
+      user: 'images/user-red.png'
+    },
+    default: {
+      logo: 'images/sublogo.png',
+      user: 'images/user.png'
+    }
+  };
 
-// 2. Listen for clicks on the theme dot toggle
-if (blueThemeToggle) {
-  blueThemeToggle.addEventListener('change', (e) => {
+  const activeTheme = icons[theme] ? theme : 'default';
+
+  if (logoImg) logoImg.src = icons[activeTheme].logo;
+  if (profileImg) profileImg.src = icons[activeTheme].user;
+}
+
+// 1. Load saved theme on startup
+const savedTheme = localStorage.getItem('taskie_theme') || 'default';
+setTheme(savedTheme);
+
+// 2. Event Listeners for the Dots
+if (blueToggle) {
+  blueToggle.addEventListener('change', (e) => {
     if (e.target.checked) {
-      // Switch to Blue Theme
-      document.body.classList.add('blue-theme');
-      localStorage.setItem('taskie_theme', 'blue');
-      updateThemeIcons(true);
+      setTheme('blue');
     } else {
-      // Switch back to Pink Theme
-      document.body.classList.remove('blue-theme');
-      localStorage.setItem('taskie_theme', 'default');
-      updateThemeIcons(false);
+      setTheme('default');
     }
   });
 }
 
-
-// Function to update icon sources based on theme state
-function updateThemeIcons(isBlue) {
-  if (logoImg) {
-    // Switch to your blue sublogo when blue theme is active, otherwise default to pink
-    logoImg.src = isBlue ? 'images/sublogo-blue.png' : 'images/sublogo.png';
-  }
-  if (profileImg) {
-    // Switch to your blue user icon when blue theme is active, otherwise default to pink
-    profileImg.src = isBlue ? 'images/user-blue.png' : 'images/user.png';
-  }
-}
-
-// (Optional) Call registerPushNotifications() when a user clicks an "Enable Notifications" button in your UI
-
-const notificationToggle = document.getElementById('notification-toggle');
-
-// Register Service Worker for Notifications
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker registered successfully:', registration.scope);
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
-    }
-  });
-}
-
-// 1. Sync toggle state on page load
-if (notificationToggle) {
-  if (Notification.permission === 'granted') {
-    notificationToggle.checked = true;
-  }
-
-  // 2. Listen for flips on the toggle
-  notificationToggle.addEventListener('change', async (e) => {
+if (redToggle) {
+  redToggle.addEventListener('change', (e) => {
     if (e.target.checked) {
-      // User turned it ON
-      await registerPushNotifications();
-      if (Notification.permission !== 'granted') {
-        // If they denied the browser prompt, flip the toggle back off
-        e.target.checked = false;
-      }
+      setTheme('red');
     } else {
-      // User turned it OFF (Optional: remove subscription from Supabase)
-      await disablePushNotifications();
+      setTheme('default');
     }
   });
 }
