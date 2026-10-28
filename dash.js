@@ -497,8 +497,14 @@ if (groupsContainer) {
     const input = form.querySelector('.add-task-input');
     const dateInput = form.querySelector('.add-task-date');
     
+    // 👇 ADD THESE TWO CONSOLE LOGS HERE 👇
+    console.log("Raw date input value:", dateInput ? dateInput.value : "No date input found");
+    
     const taskText = input.value.trim();
     const dueDate = (dateInput && dateInput.value) ? new Date(dateInput.value).toISOString() : null;
+    
+    // 👇 AND THIS ONE TOO 👇
+    console.log("Converted dueDate for Supabase:", dueDate);
 
     if (!taskText) return;
 
