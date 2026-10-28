@@ -172,6 +172,12 @@ async function loadTasksForGroup(groupId) {
 
     const li = document.createElement('li');
     li.className = 'task-item';
+
+    // Format the due date nicely if it exists (e.g., "Oct 29, 2026, 10:00 AM")
+    const formattedDate = task.due_date 
+      ? new Date(task.due_date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) 
+      : '';
+
     li.innerHTML = `
       <input 
         type="checkbox" 
@@ -184,6 +190,8 @@ async function loadTasksForGroup(groupId) {
       data-task-id="${task.id}"
       title="Click to edit task"
       >${task.text}</span>
+
+      ${formattedDate ? `<span class="task-due-date" style="font-size: 0.8rem; opacity: 0.7; margin-left: auto;">📅 ${formattedDate}</span>` : ''}
     `;
 
     // Toggle Checkbox / Completion State
